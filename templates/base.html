@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>
+        {% block title %}
+        {% endblock title %}
+    </title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    {% include 'components/_style.html' %}
+</head>
+<body>
+<div class="page-holder">
+    <!-- navbar-->
+    {% include 'components/_navbar.html' %}
+    <!--  Main -->
+    {% block main %}
+    {% endblock main %}
+    <!-- FOOTER SECTION-->
+    {% include 'components/_footer.html' %}
+    <!-- JavaScript files-->
+    {% include 'components/_javascripts.html' %}
+    <!-- FontAwesome CSS - loading as last, so it doesn't block rendering-->
+    {% include 'components/_css.html' %}
+</div>
+</body>
+</html>
