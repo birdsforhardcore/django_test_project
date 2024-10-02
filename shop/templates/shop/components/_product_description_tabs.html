@@ -1,0 +1,50 @@
+<ul class="nav nav-tabs border-0" id="myTab" role="tablist">
+    <li class="nav-item"><a class="nav-link text-uppercase active" id="description-tab" data-bs-toggle="tab"
+                            href="#description"
+                            role="tab" aria-controls="description" aria-selected="true">Описание</a>
+    </li>
+    <li class="nav-item"><a class="nav-link text-uppercase" id="reviews-tab" data-bs-toggle="tab"
+                            href="#"
+                            role="tab" aria-controls="reviews" aria-selected="false">Отзывы</a></li>
+</ul>
+<div class="tab-content mb-5" id="myTabContent">
+    <div class="tab-pane fade show active" id="description" role="tabpanel" aria-labelledby="description-tab">
+        <div class="p-4 p-lg-5 bg-white">
+            <h6 class="text-uppercase">Описание товара</h6>
+            <p class="text-muted text-sm mb-0">{{ product.info }}</p>
+        </div>
+    </div>
+    <div class="tab-pane fade" id="reviews" role="tabpanel" aria-labelledby="reviews-tab">
+        <div class="p-4 p-lg-5 bg-white">
+            <div class="row">
+                <div class="col-lg-8">
+                    <div class="d-flex mb-3">
+                        <div class="flex-shrink-0"><img class="rounded-circle" src="#" alt="" width="50"></div>
+                        <div class="container">
+                            <h6 class="text-center">
+                                Отзыв могут оставить только зарегистрированные пользователи
+                                <a href="#">Войти</a>
+                            </h6>
+                        </div>
+
+                    </div>
+
+                    <div class="ms-3 flex-shrink-1">
+                        <h6 class="mb-0 text-uppercase">khasan</h6>
+                        <p class="small text-muted mb-0 text-uppercase">25 февраля 2023 г.</p>
+                        <ul class="list-inline mb-1 text-xs">
+                            <li class="list-inline-item m-0"><i class="fas fa-star text-warning"></i></li>
+                            <li class="list-inline-item m-0"><i class="fas fa-star text-warning"></i></li>
+                            <li class="list-inline-item m-0"><i class="fas fa-star text-warning"></i></li>
+                            <li class="list-inline-item m-0"><i class="fas fa-star text-warning"></i></li>
+                            <li class="list-inline-item m-0"><i
+                                    class="fas fa-star-half-alt text-warning"></i></li>
+                        </ul>
+                        <p class="text-sm mb-0 text-muted">dfsdfsdf</p>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

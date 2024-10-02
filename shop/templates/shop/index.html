@@ -4,12 +4,20 @@
 {{ title }}
 {% endblock title %}
 
-
 {% block main %}
 <main>
     <!--  Modal -->
     {% include 'components/_modal.html' %}
-    <!-- HERO SECTION-->
-    {% include 'components/_hero.html' %}
+    <div class="container">
+        {% include 'shop/components/_banner.html' %}
+        <!-- CATEGORIES SECTION-->
+        {% include 'shop/components/_categories.html' %}
+        <!-- TRENDING PRODUCTS-->
+        {% include 'shop/components/_trending_products.html' %}
+        <!-- SERVICES-->
+        {% include 'shop/components/_services.html' %}
+        <!-- NEWSLETTER-->
+        {% include 'shop/components/_newsletter.html' %}
+    </div>
 </main>
 {% endblock main %}

@@ -11,13 +11,21 @@ class Category(models.Model):
                                verbose_name='Категория', related_name='subcategories')
 
     def get_absolute_url(self):
-        pass
+        """Ссылка на страницу категории"""
+        return reverse('category_detail', kwargs={'slug': self.slug})
 
     def __str__(self):
         return self.title
 
     def __repr__(self):
         return f'Категория: pk={self.pk}, title={self.title}'
+
+    def get_parent_category_photo(self):
+        if self.image:
+            return self.image.url
+        else:
+            return 'https://raumplus.ru/upload/iblock/545/Skoro-zdes-budet-foto.jpg'
+
 
     class Meta:
         verbose_name = 'Категория'
@@ -38,7 +46,13 @@ class Product(models.Model):
     color = models.CharField(max_length=30, default='Серебро', verbose_name='Цвет/Материал')
 
     def get_absolute_url(self):
-        pass
+        return reverse('product_page', kwargs={'slug': self.slug})
+
+    def get_first_photo(self):
+        if self.images.first():
+            return self.images.first().image.url
+        else:
+            return 'https://raumplus.ru/upload/iblock/545/Skoro-zdes-budet-foto.jpg'
 
     def __str__(self):
         return self.title

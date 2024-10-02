@@ -1,7 +1,7 @@
 <header class="header bg-white">
     <div class="container px-lg-3">
         <nav class="navbar navbar-expand-lg navbar-light py-3 px-lg-0"><a class="navbar-brand"
-                                                                          href="https://shop.distro.uz/ru/"><span
+                                                                          href="{% url 'index' %}"><span
                 class="fw-bold text-uppercase text-dark">Финальный проект</span></a>
             <button class="navbar-toggler navbar-toggler-end" type="button" data-bs-toggle="collapse"
                     data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
@@ -11,45 +11,36 @@
                 <ul class="navbar-nav me-auto">
                     <li class="nav-item">
                         <!-- Link-->
-                        <a class="nav-link active" href="https://shop.distro.uz/ru/">Главная</a>
-
+                        <a class="nav-link active" href="{% url 'index' %}">Главная</a>
                     </li>
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" id="navbarDropdown" role="button"
-                           href="https://shop.distro.uz/ru/" data-toggle="dropdown" aria-haspopup="true"
+                           href="{% url 'index' %}" data-toggle="dropdown" aria-haspopup="true"
                            aria-expanded="true"> Язык</a>
                         <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-
-
-                            <li><a href="https://shop.distro.uz/ru/" class="dropdown-item">Русский</a></li>
-
-                            <li><a href="https://shop.distro.uz/en/" class="dropdown-item">English</a></li>
-
+                            <li><a href="{% url 'index' %}" class="dropdown-item">Русский</a></li>
+                            <li><a href="{% url 'index' %}" class="dropdown-item">English</a></li>
                         </ul>
                     </li>
-
-
                 </ul>
                 <ul class="navbar-nav ms-auto">
-                    <li class="nav-item"><a class="nav-link" href="https://shop.distro.uz/ru/cart/"> <i
-                            class="fas fa-dolly-flatbed me-1 text-gray"></i>Корзина
-                        <small class="text-gray fw-normal">
-
-                        </small></a></li>
-
-
-                    <li class="nav-item"><a class="nav-link" href="https://shop.distro.uz/ru/my_favorite/"> <i
-                            class="far fa-heart me-1"></i><small class="text-gray fw-normal">
-                        Избранные
-
-
-                    </small></a></li>
-
-
-                    <li class="nav-item"><a class="nav-link" href="https://shop.distro.uz/ru/login_registration/">
-                        <i class="fas fa-user me-1 text-gray fw-normal"></i>Войти/Зарегистрироваться</a></li>
-
-
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">
+                            <i class="fas fa-dolly-flatbed me-1 text-gray"></i>Корзина
+                            <small class="text-gray fw-normal"></small></a>
+                    </li>
+                    <li class="nav-item"><a class="nav-link" href="#">
+                        <i class="far fa-heart me-1"></i><small class="text-gray fw-normal">Избранные</small></a>
+                    </li>
+                    {% if request.user.is_authenticated %}
+                    <li class="nav-item"><a class="nav-link" href="{% url 'user_logout' %}">
+                        <i class="fas fa-user me-1 text-gray fw-normal"></i>Выйти</a>
+                    </li>
+                    {% else %}
+                    <li class="nav-item"><a class="nav-link" href="{% url 'login_registration' %}">
+                        <i class="fas fa-user me-1 text-gray fw-normal"></i>Войти/Зарегистрироваться</a>
+                    </li>
+                    {% endif %}
                 </ul>
             </div>
         </nav>

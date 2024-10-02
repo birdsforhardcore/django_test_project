@@ -1,0 +1,22 @@
+<div class="product text-center">
+    <div class="mb-3 position-relative">
+        <div class="badge text-white bg-"></div>
+        <a class="d-block" href="{{ product.get_absolute_url }}">
+            <img class="img-fluid" src="{{ product.get_first_photo }}" alt="...">
+        </a>
+        <div class="product-overlay">
+            <ul class="mb-0 list-inline">
+                <li class="list-inline-item m-0 p-0">
+                    <a class="btn btn-sm btn-outline-dark" href="/ru/add_favorite/yyyy/">
+                        <i class="far fa-heart"></i>
+                    </a>
+                </li>
+                <li class="list-inline-item m-0 p-0">
+                    <a class="btn btn-sm btn-dark" href="/ru/to_cart/21/add/">Добавить в корзину</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <h6><a class="reset-anchor" href="{{ product.get_absolute_url }}">{{ product.title }}</a></h6>
+    <p class="small text-muted">${{ product.price }}</p>
+</div>
