@@ -6,15 +6,7 @@
 
 {% block main %}
 <main>
-    {% if messages %}
-    <div class="container">
-        {% for message in messages %}
-        <div class="alert alert-{% if message.tags == 'error' %}danger{% else %}{{ message.tags }}{% endif %}">
-            {{ message }}
-        </div>
-        {% endfor %}
-    </div>
-    {% endif %}
+    {% include 'shop/components/_user_messages.html' %}
     <div>
         <div style="margin-top: 150px;"></div>
     </div>

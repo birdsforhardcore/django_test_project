@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.utils.safestring import mark_safe
 
-from .models import Product, Category, Gallery
+from .models import Product, Category, Gallery, Review, Mail
 
 
 class GalleryInline(admin.TabularInline):
@@ -27,6 +27,7 @@ class CategoryAdmin(admin.ModelAdmin):
 @admin.register(Product)
 class ProductAdmin(admin.ModelAdmin):
     list_display = ('pk', 'title', 'category', 'quantity', 'price', 'created_at', 'size', 'color', 'get_photo')
+    readonly_fields = ('watched',)
     list_editable = ('price', 'quantity', 'size', 'color')
     prepopulated_fields = {'slug': ('title',)}
     list_filter = ('title', 'price')
@@ -43,3 +44,15 @@ class ProductAdmin(admin.ModelAdmin):
 
 
 admin.site.register(Gallery)
+
+@admin.register(Review)
+class ReviewAdmin(admin.ModelAdmin):
+    list_display = ('pk', 'author', 'created_at')
+    readonly_fields = ('author', 'text', 'created_at')
+
+
+@admin.register(Mail)
+class ReviewMail(admin.ModelAdmin):
+    """Почтовые подписки"""
+    list_display = ('pk', 'mail', 'user')
+    readonly_fields = ('mail', 'user')

@@ -1,5 +1,6 @@
 from django import template
-from shop.models import Category
+from shop.models import Category, FavoriteProducts
+from django.template.defaulttags import register as range_register
 
 
 register = template.Library()
@@ -36,3 +37,22 @@ def get_sorted():
         }
     ]
     return sorters
+
+
+@range_register.filter
+def get_positive_range(value):
+    return range(int(value))
+
+
+@range_register.filter
+def get_negative_range(value):
+    return range(5 - int(value))
+
+
+@register.simple_tag()
+def get_favorite_products(user):
+    """Вывод избранных товаров"""
+    fav = FavoriteProducts.objects.filter(user=user)
+    products = [i.product for i in fav]
+    return products
+

@@ -1,7 +1,7 @@
 from django import forms
 from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
 
-from .models import User
+from .models import User, Review
 
 
 class LoginForm(AuthenticationForm):
@@ -24,3 +24,16 @@ class RegistrationForm(UserCreationForm):
         fields = ('username', 'email',)
         widgets = {'username': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Имя пользователя'}),
                    'email': forms.EmailInput(attrs={'class': 'form-control', 'placeholder': 'Почта'})}
+
+
+class ReviewForm(forms.ModelForm):
+    """Форма для отзыва"""
+
+    class Meta:
+        model = Review
+        fields = ('text', 'grade')
+        widgets = {'text': forms.Textarea(attrs={'class': 'form-control',
+                                                 'placeholder': 'Ваш отзыв'}),
+                   'grade': forms.Select(attrs={'class': 'form-control',
+                                                'placeholder': 'Ваша оценка'})}
+

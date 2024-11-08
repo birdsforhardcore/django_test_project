@@ -2,9 +2,11 @@ from django.shortcuts import render, redirect
 from django.views.generic import ListView, DetailView
 from django.contrib.auth import login, logout
 from django.contrib import messages
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.db.utils import IntegrityError
 
-from .models import Category, Product
-from .forms import LoginForm, RegistrationForm
+from .models import Category, Product, Review, FavoriteProducts, Mail
+from .forms import LoginForm, RegistrationForm, ReviewForm
 
 
 class Index(ListView):
@@ -70,6 +72,10 @@ class ProductPage(DetailView):
         context['title'] = product.title
         products = Product.objects.exclude(title=product.title).filter(category=product.category)[:5]
         context['products'] = products
+        context['reviews'] = Review.objects.filter(product=product).order_by('-pk')
+        if self.request.user.is_authenticated:
+            context['review_form'] = ReviewForm
+
         return context
 
 
@@ -109,3 +115,58 @@ def user_registration(request):
         for error in form.errors:
             messages.error(request, form.errors[error].as_text())
     return redirect('login_registration')
+
+
+def save_review(request, product_pk):
+    """Сохранение отзыва"""
+    form = ReviewForm(data=request.POST)
+    if form.is_valid():
+        review = form.save(commit=False)
+        review.author = request.user
+        product = Product.objects.get(pk=product_pk)
+        review.product = product
+        review.save()
+        return redirect('product_page', product.slug)
+
+
+def save_favorite_product(request, product_slug):
+    """Дабовление или удаление товара из избранных"""
+    if request.user.is_authenticated:
+        user = request.user
+        product = Product.objects.get(slug=product_slug)
+        favorite_products = FavoriteProducts.objects.filter(user=user)
+        if product in [i.product for i in favorite_products]:
+            fav_product = FavoriteProducts.objects.get(user=user, product=product)
+            fav_product.delete()
+        else:
+            FavoriteProducts.objects.create(user=user, product=product)
+
+        next_page = request.META.get('HTTP_REFERER', 'category_detail')
+        return redirect(next_page)
+
+
+class FavoriteProductsView(ListView, LoginRequiredMixin):
+    """Для вывода избранных"""
+    model = FavoriteProducts
+    context_object_name = 'products'
+    template_name = 'shop/favorite_products.html'
+    login_url = 'user_registration'
+
+    def get_queryset(self):
+        """Получаем товары конкретного пользователя"""
+        user = self.request.user
+        favs = FavoriteProducts.objects.filter(user=user)
+        products = [i.product for i in favs]
+        return products
+
+
+def save_subscribers(request):
+    """Собиратель почтовых адресов"""
+    email = request.POST.get('email')
+    user = request.user if request.user.is_authenticated else None
+    if email:
+        try:
+            Mail.objects.create(mail=email, user=user)
+        except IntegrityError as E:
+            messages.error(request, 'Вы уже подписаны')
+    return redirect('index')
