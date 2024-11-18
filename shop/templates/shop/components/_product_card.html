@@ -27,7 +27,7 @@
                 {% endif %}
 
                 <li class="list-inline-item m-0 p-0">
-                    <a class="btn btn-sm btn-dark" href="/ru/to_cart/21/add/">Добавить в корзину</a>
+                    <a class="btn btn-sm btn-dark" href="{% url 'to_cart' product.pk 'add' %}">Добавить в корзину</a>
                 </li>
             </ul>
         </div>

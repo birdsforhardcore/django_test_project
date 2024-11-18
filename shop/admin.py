@@ -1,7 +1,9 @@
 from django.contrib import admin
 from django.utils.safestring import mark_safe
+from modeltranslation.admin import TranslationAdmin
 
-from .models import Product, Category, Gallery, Review, Mail
+from .models import (Product, Category, Gallery, Review,
+                     Mail, Customer, Order, OrderProduct, ShippingAddress)
 
 
 class GalleryInline(admin.TabularInline):
@@ -11,8 +13,8 @@ class GalleryInline(admin.TabularInline):
 
 
 @admin.register(Category)
-class CategoryAdmin(admin.ModelAdmin):
-    list_display = ('title', 'parent', 'get_products_count')
+class CategoryAdmin(TranslationAdmin):
+    list_display = ('pk', 'title', 'parent', 'get_products_count')
     prepopulated_fields = {'slug': ('title',)}
 
     def get_products_count(self, obj):
@@ -25,7 +27,7 @@ class CategoryAdmin(admin.ModelAdmin):
 
 
 @admin.register(Product)
-class ProductAdmin(admin.ModelAdmin):
+class ProductAdmin(TranslationAdmin):
     list_display = ('pk', 'title', 'category', 'quantity', 'price', 'created_at', 'size', 'color', 'get_photo')
     readonly_fields = ('watched',)
     list_editable = ('price', 'quantity', 'size', 'color')
@@ -45,6 +47,7 @@ class ProductAdmin(admin.ModelAdmin):
 
 admin.site.register(Gallery)
 
+
 @admin.register(Review)
 class ReviewAdmin(admin.ModelAdmin):
     list_display = ('pk', 'author', 'created_at')
@@ -56,3 +59,35 @@ class ReviewMail(admin.ModelAdmin):
     """Почтовые подписки"""
     list_display = ('pk', 'mail', 'user')
     readonly_fields = ('mail', 'user')
+
+
+@admin.register(Order)
+class ReviewOrder(admin.ModelAdmin):
+    """Корзина"""
+    list_display = ('customer', 'created_at', 'is_completed', 'shipping')
+    readonly_fields = ('customer', 'is_completed', 'shipping')
+    list_filter = ('customer', 'is_completed')
+
+
+@admin.register(Customer)
+class ReviewCustomer(admin.ModelAdmin):
+    """Заказчики"""
+    list_display = ('user', 'first_name', 'last_name', 'email')
+    readonly_fields = ('user', 'first_name', 'last_name', 'email', 'phone')
+    list_filter = ('user',)
+
+
+@admin.register(OrderProduct)
+class ReviewOrderProduct(admin.ModelAdmin):
+    """Товары в заказе"""
+    list_display = ('product', 'order', 'quantity', 'added_at')
+    readonly_fields = ('product', 'order', 'quantity', 'added_at')
+    list_filter = ('product',)
+
+
+@admin.register(ShippingAddress)
+class ReviewShippingAddress(admin.ModelAdmin):
+    """Адрес доставки"""
+    list_display = ('customer', 'city', 'state', 'street', 'created_at')
+    readonly_fields = ('customer', 'city', 'state', 'street', 'created_at')
+    list_filter = ('customer', 'city', 'state', 'street')

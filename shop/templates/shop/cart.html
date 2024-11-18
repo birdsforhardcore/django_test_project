@@ -1,0 +1,89 @@
+{% extends 'base.html' %}
+
+{% block title %}
+{{ title }}
+{% endblock title %}
+
+{% block main %}
+
+<main>
+    <div class="container">
+        <section class="py-5 bg-light">
+            <div class="container">
+                <div class="row px-4 px-lg-5 py-lg-4 align-items-center">
+                    <div class="col-lg-6">
+                        <h1 class="h2 text-uppercase mb-0">Корзина</h1>
+                    </div>
+                    <div class="col-lg-6 text-lg-end">
+                        <nav aria-label="breadcrumb">
+                            <ol class="breadcrumb justify-content-lg-end mb-0 px-0 bg-light">
+                                <li class="breadcrumb-item"><a href="#" class="text-dark">Главная</a></li>
+                                <li class="breadcrumb-item active" aria-current="page">Cart</li>
+                            </ol>
+                        </nav>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <section class="py-5">
+            <h2 class="h5 text-uppercase mb-4">Список товаров в корзине</h2>
+            <div class="row">
+                <div class="col-lg-8 mb-4 mb-lg-0">
+                    <div class="table-responsive mb-4">
+                        <table class="table">
+                            <thead class="bg-light">
+                            <tr>
+                                <th class="border-0 p-3" scope="col"><strong class="text-sm text-upper">Товар</strong></th>
+                                <th class="border-0 p-3" scope="col"><strong class="text-sm text-upper">Стоимость</strong></th>
+                                <th class="border-0 p-3" scope="col"><strong class="text-sm text-upper">Количество</strong></th>
+                                <th class="border-0 p-3" scope="col"><strong class="text-sm text-upper">Сумма</strong></th>
+                                <th class="border-0 p-3" scope="col"><strong class="text-sm text-upper">Удалить</strong></th>
+                            </tr>
+                            </thead>
+                            <tbody class="border-0">
+                            {% for item in order_products %}
+                            {% include 'shop/components/_cart_row.html' %}
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="bg-light px-4 py-3">
+                        <div class="row align-items-center text-center">
+                            <div class="col-md-6 mb-3 mb-md-0 text-md-start">
+                                <a href="{% url 'index' %}" class="btn btn-link p-0 text-dark btn-sm">
+                                    <i class="fas fa-long-arrow-alt-left me-2"></i>Продолжить покупки
+                                </a>
+                            </div>
+                            <div class="col-md-6 text-md-end">
+                                <a href="{% url 'checkout' %}" class="btn btn-outline-dark btn-sm">Оформить заказ
+                                    <i class="fas fa-long-arrow-alt-right ms-2"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="card border-0 rounded-0 p-lg-4 bg-light">
+                        <div class="card-body">
+                            <h5 class="text-uppercase mb-4"></h5>
+                            <ul class="list-unstyled mb-0">
+                                <li class="d-flex align-items-center justify-content-between">
+                                    <strong class="text-uppercase small font-weight-bold">Товары</strong>
+                                    <span class="text-muted small">{{ order.get_cart_total_quantity }}</span>
+                                </li>
+                                <li class="border-bottom my-2"></li>
+                                <li class="d-flex align-items-center justify-content-between mb-4">
+                                    <strong class="text-uppercase small font-weight-bold">Стоимость</strong>
+                                    <span>${{ order.get_cart_total_price }}</span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+</main>
+
+
+{% endblock main %}

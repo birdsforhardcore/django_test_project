@@ -1,5 +1,5 @@
 from django import template
-from shop.models import Category, FavoriteProducts
+from shop.models import Category, FavoriteProducts, Order, Customer
 from django.template.defaulttags import register as range_register
 
 
@@ -56,3 +56,16 @@ def get_favorite_products(user):
     products = [i.product for i in fav]
     return products
 
+
+@register.simple_tag()
+def get_basket_count(user):
+    """Вывод количества товаров в корзине"""
+    customer = Customer.objects.get(user=user)
+    basket = Order.objects.get(customer=customer)
+    return basket.get_cart_total_quantity
+
+
+@register.simple_tag()
+def get_favorite_count(user):
+    """Вывод количества товаров в избранном"""
+    return len(get_favorite_products(user))

@@ -26,7 +26,6 @@ class Category(models.Model):
         else:
             return 'https://raumplus.ru/upload/iblock/545/Skoro-zdes-budet-foto.jpg'
 
-
     class Meta:
         verbose_name = 'Категория'
         verbose_name_plural = 'Категории'
@@ -82,6 +81,7 @@ CHOICES = (
     ('1', 'Ужасно'),
 )
 
+
 class Review(models.Model):
     """Модель для отзывов"""
     text = models.TextField(verbose_name='Текст')
@@ -116,6 +116,9 @@ class Mail(models.Model):
     mail = models.EmailField(unique=True, verbose_name='Почта')
     user = models.ForeignKey(User, on_delete=models.CASCADE, blank=True, null=True, verbose_name='Пользователь')
 
+    def __str__(self):
+        return self.mail
+
     class Meta:
         verbose_name = 'Почта'
         verbose_name_plural = 'Почты'
@@ -131,7 +134,6 @@ class Customer(models.Model):
 
     def __str__(self):
         return self.first_name
-
 
     class Meta:
         verbose_name = 'Покупатель'
@@ -153,7 +155,7 @@ class Order(models.Model):
         verbose_name_plural = 'Заказы'
 
     @property
-    def get_card_total_price(self):
+    def get_cart_total_price(self):
         """Получение общей суммы заказа в корзине"""
         order_products = self.ordered.all()
         total_price = sum([product.get_total_price for product in order_products])

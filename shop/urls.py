@@ -14,4 +14,10 @@ urlpatterns = [
     path('add_favorite/<slug:product_slug>', save_favorite_product, name='add_favorite'),
     path('user_favorites', FavoriteProductsView.as_view(), name='favorite_products_page'),
     path('save_email', save_subscribers, name='save_subscribers'),
+    path('send_mail/', send_mail_to_subscribers, name='send_mail'),
+    path('cart', cart, name='cart'),
+    path('to_cart/<int:product_id>/<str:action>', to_cart, name='to_cart'),
+    path('checkout/', checkout, name='checkout'),
+    path('payment/', create_checkout_session, name='payment'),
+    path('payment_success/', success_payment, name='success'),
 ]

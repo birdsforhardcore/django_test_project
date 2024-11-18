@@ -1,12 +1,18 @@
+import stripe
 from django.shortcuts import render, redirect
+from django.urls import reverse
 from django.views.generic import ListView, DetailView
 from django.contrib.auth import login, logout
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.utils import IntegrityError
+from django.core.mail import send_mail
+from django.core import paginator
 
-from .models import Category, Product, Review, FavoriteProducts, Mail
-from .forms import LoginForm, RegistrationForm, ReviewForm
+from .models import Category, Product, Review, FavoriteProducts, Mail, Customer
+from .forms import LoginForm, RegistrationForm, ReviewForm, CustomerForm, ShippingForm
+from .utils import CartForAuthenticatedUser, get_cart_data
+from conf import settings
 
 
 class Index(ListView):
@@ -25,10 +31,13 @@ class Index(ListView):
         """Вывод на страницу дополнительных элементов"""
         context = super().get_context_data()
         context['top_products'] = Product.objects.order_by('-watched')[:8]
+
         return context
 
 
 class SubCategories(ListView):
+    """Вывод подкатегорий на отдельной странице"""
+    paginate_by = 2
     model = Product
     context_object_name = 'products'
     template_name = 'shop/category_page.html'
@@ -38,6 +47,7 @@ class SubCategories(ListView):
         type_field = self.request.GET.get('type')
         if type_field:
             products = Product.objects.filter(category__slug=type_field)
+            print([item for item in products])
             return products
 
         parent_category = Category.objects.get(slug=self.kwargs['slug'])
@@ -167,6 +177,106 @@ def save_subscribers(request):
     if email:
         try:
             Mail.objects.create(mail=email, user=user)
+            from .tasks import send_msg_to_email
+            send_msg_to_email.delay(email)
         except IntegrityError as E:
             messages.error(request, 'Вы уже подписаны')
     return redirect('index')
+
+
+def send_mail_to_subscribers(request):
+    """Отправка рассылки"""
+    if request.method == 'POST':
+        text = request.POST.get('text')
+        mail_lists = Mail.objects.all()
+        for email in mail_lists:
+            send_mail(
+                subject='У нас новая акция',
+                message=text,
+                from_email=settings.EMAIL_HOST_USER,
+                recipient_list=[email],
+                fail_silently=False,
+            )
+            print(f'Сообщение отправлено на почту: {email} ----- {bool(send_mail)}')
+    context = {'title': 'Спамер'}
+    return render(request, 'shop/send_mail.html', context)
+
+
+def cart(request):
+    """Страница корзины"""
+    cart_info = get_cart_data(request)
+    context = {'order': cart_info.get('order'),
+               'order_products': cart_info.get('order_products'),
+               'cart_total_quantity': cart_info.get('cart_total_quantity'),
+               'title': 'Корзина'}
+
+    return render(request, 'shop/cart.html', context)
+
+
+def to_cart(request, product_id, action):
+    """Добавляет товар в корзину"""
+    if request.user.is_authenticated:
+        CartForAuthenticatedUser(request, product_id, action)
+        return redirect('cart')
+    else:
+        messages.error(request, 'Авторизуйтесь или зарегистрируйтесь')
+        return redirect('user_registration')
+
+
+def checkout(request):
+    """Страница оформления заказа"""
+    cart_info = get_cart_data(request)
+    context = {'order': cart_info.get('order'),
+               'order_products': cart_info.get('order_products'),
+               'cart_total_quantity': cart_info.get('cart_total_quantity'),
+               'customer_form': CustomerForm(),
+               'shipping_form': ShippingForm(),
+               'title': 'Оформление заказа'}
+
+    return render(request, 'shop/checkout.html', context)
+
+
+def create_checkout_session(request):
+    """Оплата на Stripe"""
+    stripe.api_key = settings.STRIPE_SECRET_KEY
+    if request.method == 'POST':
+        user_cart = CartForAuthenticatedUser(request)
+        cart_info = user_cart.get_cart_info()
+        customer_form = CustomerForm(data=request.POST)
+        if customer_form.is_valid():
+            customer = Customer.objects.get(user=request.user)
+            customer.first_name = customer_form.cleaned_data['first_name']
+            customer.last_name = customer_form.cleaned_data['last_name']
+            customer.email = customer_form.cleaned_data['email']
+            customer.phone = customer_form.cleaned_data['phone']
+            customer.save()
+        shipping_form = ShippingForm(data=request.POST)
+        if shipping_form.is_valid():
+            address = shipping_form.save(commit=False)
+            address.customer = Customer.objects.get(user=request.user)
+            address.order = user_cart.get_cart_info()['order']
+            address.save()
+
+        total_price = cart_info.get('cart_total_price')
+        total_quantity = cart_info.get('cart_total_quantity')
+
+        session = stripe.checkout.Session.create(
+            line_items=[{
+                'price_data': {'currency': 'usd',
+                               'product_data': {'name': 'Курс по Django'},
+                               'unit_amount': int(total_price * 100)},
+                'quantity': total_quantity}],
+            mode='payment',
+            success_url=request.build_absolute_uri(reverse('success')),
+            cancel_url=request.build_absolute_uri(reverse('success'))
+        )
+        return redirect(session.url, 303)
+
+
+def success_payment(request):
+    """Оплата прошла успешно"""
+    user_cart = CartForAuthenticatedUser(request)
+    user_cart.clear()
+    messages.success(request, 'Оплата прошла успешно')
+    return render(request, 'shop/success.html')
+

@@ -1,8 +1,11 @@
+{% load i18n %}
+{% load shop_tags %}
+
 <header class="header bg-white">
     <div class="container px-lg-3">
         <nav class="navbar navbar-expand-lg navbar-light py-3 px-lg-0"><a class="navbar-brand"
                                                                           href="{% url 'index' %}"><span
-                class="fw-bold text-uppercase text-dark">Финальный проект</span></a>
+                class="fw-bold text-uppercase text-dark">{% translate 'Финальный проект' %}</span></a>
             <button class="navbar-toggler navbar-toggler-end" type="button" data-bs-toggle="collapse"
                     data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
                     aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span>
@@ -11,34 +14,48 @@
                 <ul class="navbar-nav me-auto">
                     <li class="nav-item">
                         <!-- Link-->
-                        <a class="nav-link active" href="{% url 'index' %}">Главная</a>
+                        <a class="nav-link active" href="{% url 'index' %}">{% translate 'Главная' %}</a>
                     </li>
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" id="navbarDropdown" role="button"
                            href="{% url 'index' %}" data-toggle="dropdown" aria-haspopup="true"
-                           aria-expanded="true"> Язык</a>
+                           aria-expanded="true">{% translate 'Язык' %}</a>
                         <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                            <li><a href="{% url 'index' %}" class="dropdown-item">Русский</a></li>
-                            <li><a href="{% url 'index' %}" class="dropdown-item">English</a></li>
+                            {% get_current_language as LANGUAGE_CODE %}
+                            {% get_available_languages as LANGUAGES %}
+                            {% get_language_info_list for LANGUAGES as languages %}
+                            {% for lang in languages %}
+                                <li><a href="/{{ lang.code }}/" class="dropdown-item">{{ lang.name_local }}</a></li>
+                            {% endfor %}
                         </ul>
                     </li>
                 </ul>
                 <ul class="navbar-nav ms-auto">
                     <li class="nav-item">
-                        <a class="nav-link" href="#">
-                            <i class="fas fa-dolly-flatbed me-1 text-gray"></i>Корзина
-                            <small class="text-gray fw-normal"></small></a>
+                        <a class="nav-link" href="{% url 'cart' %}">
+                            <i class="fas fa-dolly-flatbed me-1 text-gray"></i>{% translate 'Корзина' %}
+                            <small class="text-gray fw-normal">
+                                {% if request.user.is_authenticated %}
+                                {% get_basket_count request.user as cnt_bas %}
+                                ({{ cnt_bas }})
+                                {% endif %}
+                            </small></a>
                     </li>
                     <li class="nav-item"><a class="nav-link" href="{% url 'favorite_products_page' %}">
-                        <i class="far fa-heart me-1"></i><small class="text-gray fw-normal">Избранные</small></a>
+                        <i class="far fa-heart me-1"></i>{% translate 'Избранные' %}<small class="text-gray fw-normal">
+                        {% if request.user.is_authenticated %}
+                        {% get_favorite_count request.user as cnt_fav %}
+                        ({{ cnt_fav }})
+                        {% endif %}
+                    </small></a>
                     </li>
                     {% if request.user.is_authenticated %}
                     <li class="nav-item"><a class="nav-link" href="{% url 'user_logout' %}">
-                        <i class="fas fa-user me-1 text-gray fw-normal"></i>Выйти</a>
+                        <i class="fas fa-user me-1 text-gray fw-normal"></i>{% translate 'Выйти' %}</a>
                     </li>
                     {% else %}
                     <li class="nav-item"><a class="nav-link" href="{% url 'login_registration' %}">
-                        <i class="fas fa-user me-1 text-gray fw-normal"></i>Войти/Зарегистрироваться</a>
+                        <i class="fas fa-user me-1 text-gray fw-normal"></i>{% translate 'Войти/Зарегистрироваться' %}</a>
                     </li>
                     {% endif %}
                 </ul>
