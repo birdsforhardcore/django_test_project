@@ -1,0 +1,70 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2024-11-12 11:13+0500\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+#: .\shop\forms.py:11 .\shop\forms.py:26
+msgid "Имя пользователя"
+msgstr "Username"
+
+#: .\shop\forms.py:13 .\shop\forms.py:19
+msgid "Пароль"
+msgstr "Password"
+
+#: .\shop\forms.py:21
+msgid "Подтвердите пароль"
+msgstr "Confirm password"
+
+#: .\shop\forms.py:27
+msgid "Почта"
+msgstr "Email"
+
+#: .\shop\forms.py:37
+msgid "Ваш отзыв"
+msgstr "Review"
+
+#: .\shop\forms.py:39
+msgid "Ваша оценка"
+msgstr "Mark"
+
+#: .\shop\forms.py:48
+msgid "Имя"
+msgstr "First name"
+
+#: .\shop\forms.py:49
+msgid "Фамилия"
+msgstr "Last name"
+
+#: .\shop\forms.py:50
+msgid "Email"
+msgstr "Email"
+
+#: .\shop\forms.py:51
+msgid "Телефон"
+msgstr "Phone"
+
+#: .\shop\forms.py:61
+msgid "Город"
+msgstr "City"
+
+#: .\shop\forms.py:62
+msgid "Район"
+msgstr "State"
+
+#: .\shop\forms.py:63
+msgid "Улица/дом/квартира"
+msgstr "Street"
