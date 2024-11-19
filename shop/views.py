@@ -7,7 +7,6 @@ from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.utils import IntegrityError
 from django.core.mail import send_mail
-from django.core import paginator
 
 from .models import Category, Product, Review, FavoriteProducts, Mail, Customer
 from .forms import LoginForm, RegistrationForm, ReviewForm, CustomerForm, ShippingForm
